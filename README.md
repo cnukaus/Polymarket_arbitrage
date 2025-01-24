@@ -267,15 +267,3 @@ python get_trade_slugs_to_parquet.py <token_id> <market_slug> <outcome>
 # Then
 python plot_arb.py
 ```
-
----
-
-## Outdated / Duplicate Scripts
-
-### `create_markets_data_csv.py` vs `generate_markets_data_csv.py`
-- **Both** fetch & store market data.
-- **Recommendation**: Prefer `generate_markets_data_csv.py`.
-
-### `derive_api_key.py`, `generate_api_key.py`, `get_api_key.py`
-- All revolve around managing Polymarket API credentials.
-- **Recommendation**: Possibly consolidate into a single script or keep them separate if each is needed for a distinct workflow.
