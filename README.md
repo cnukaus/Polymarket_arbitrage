@@ -1,5 +1,5 @@
 
-# Polymarket CLOB Toolkit
+# Polymarket Arbitrage
 
 This repository contains Python scripts and utilities to interact with the Polymarket Central Limit Order Book (CLOB) API on Polygon Mainnet (chain ID 137). The scripts address:
 
@@ -11,7 +11,7 @@ This repository contains Python scripts and utilities to interact with the Polym
 - Managing user trades (fetching, storing, analyzing)
 - Automated or semi-automated trading logic
 
-**Important**: All sensitive data (private key, secrets, passphrases) must be stored in environment variables (`keys.env` or `.env`). **Never** commit private keys to source control.
+**Important**: All sensitive data (private key, secrets, passphrases) must be stored in environment variables (`keys.env` or `.env`).
 
 ---
 
