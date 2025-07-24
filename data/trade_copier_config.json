@@ -1,0 +1,24 @@
+{
+  "watched_addresses": [
+    {
+      "address": "0x60073655845c95014a540ae3f7375b15801647a3",
+      "nickname": "Anonhorse political",
+      "added_date": "2025-07-25 07:59:44.222348",
+      "active": true
+    }
+  ],
+  "copy_settings": {
+    "copy_percentage": 0.5,
+    "min_trade_size": 25.0,
+    "max_trade_size": 50.0,
+    "check_interval": 60
+  },
+  "filters": {
+    "min_original_trade_size": 50.0,
+    "excluded_markets": [],
+    "included_outcomes": [
+      "Yes",
+      "No"
+    ]
+  }
+}
