@@ -18,7 +18,7 @@ class TradeCopierManager:
     """Helper class to manage trade copying operations"""
     
     def __init__(self):
-        self.config_file = './data/trade_copier_config.json'
+        self.config_file = './config/trade_copier_config.json'
         self.config = self.load_config()
     
     def load_config(self) -> Dict:

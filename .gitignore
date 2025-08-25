@@ -1,3 +1,6 @@
 .env
 SECRET_my_op.log
 keys.env
+**/data/
+_pycache_/
+polymarket_cache/
