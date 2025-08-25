@@ -10,6 +10,7 @@ import logging
 import pandas as pd
 import json
 import time
+import pickle
 from dotenv import load_dotenv
 from py_clob_client.client import ClobClient
 from py_clob_client.constants import POLYGON
@@ -35,6 +36,8 @@ class PolygonTransactionFetcher:
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.session = requests.Session()
+        self.pagination_complete = False  # Track when pagination is done
+        self.pagination_cycles = {}  # Track pagination cycles per wallet
     
     def fetch_data(self, url: str) -> Optional[Dict]:
         """Fetch data from a given URL and return the JSON response."""
@@ -50,15 +53,29 @@ class PolygonTransactionFetcher:
         """
         Fetch all ERC-1155 transactions for a wallet address with pagination
         Based on Jeremy Whittaker's fetch_all_pages logic
+        Updated for new Etherscan API v2 format
         """
+        # Initialize or increment pagination cycle count for this wallet
+        if wallet_address not in self.pagination_cycles:
+            self.pagination_cycles[wallet_address] = 0
+        
+        self.pagination_cycles[wallet_address] += 1
+        
+        # If we've done more than 1 full pagination cycle, mark as complete
+        if self.pagination_cycles[wallet_address] > 1:
+            logger.info(f"Multiple pagination cycles detected for {wallet_address}, marking pagination complete")
+            self.pagination_complete = True
+            return None
+        
         page = 1
         offset = 100
         retry_attempts = 0
         all_data = []
         
         while True:
-            url = (f"https://api.polygonscan.com/api"
-                   f"?module=account"
+            url = (f"https://api.etherscan.io/v2/api"
+                   f"?chainid=137"
+                   f"&module=account"
                    f"&action=token1155tx"
                    f"&address={wallet_address}"
                    f"&contractaddress={NEG_RISK_CTF_EXCHANGE}"
@@ -67,6 +84,7 @@ class PolygonTransactionFetcher:
                    f"&startblock=0"
                    f"&endblock=99999999"
                    f"&sort=desc"
+                   f"&tag=latest"
                    f"&apikey={self.api_key}")
             
             logger.info(f"Fetching transaction data for wallet {wallet_address}, page: {page}")
@@ -78,17 +96,21 @@ class PolygonTransactionFetcher:
                 
                 if df.empty:
                     logger.info("No more transactions found, ending pagination.")
+                    self.pagination_complete = True
                     break
                 
                 all_data.append(df)
                 page += 1
+                retry_attempts = 0  # Reset retry counter on successful page
             else:
                 logger.error(f"API response error or no data found for page {page}")
                 if retry_attempts < 5:
                     retry_attempts += 1
                     time.sleep(retry_attempts)
                 else:
-                    break
+                    logger.info(f"Max retries reached for page {page}, ending pagination")
+                    self.pagination_complete = True
+                    break  # End pagination instead of continuing to next page
         
         if all_data:
             final_df = pd.concat(all_data, ignore_index=True)
@@ -155,16 +177,16 @@ class TradeCopier:
         self.private_key = private_key
         self.polygonscan_api_key = polygonscan_api_key
         
+        # Ensure private key is in proper hex format
+        if not private_key.startswith('0x'):
+            private_key = '0x' + private_key
+        
         # Initialize Polymarket client
         self.client = ClobClient(
             host="https://clob.polymarket.com",
-            key=api_key,
-            secret=secret,
-            passphrase=passphrase,
+            key=private_key,
             chain_id=POLYGON,
-            signature_type=2,
-            funder=private_key
-        )
+                    )
         
         # Initialize components
         self.transaction_fetcher = PolygonTransactionFetcher(polygonscan_api_key)
@@ -172,6 +194,11 @@ class TradeCopier:
         
         # Track processed transactions to avoid duplicates
         self.processed_transactions = set()
+        self.detected_trades = {}  # Store all detected trades for persistence
+        self.persistence_file = "detected_trades.pkl"
+        
+        # Load existing detected trades
+        self.load_detected_trades()
         
         # Copy settings
         self.copy_percentage = 1.0  # Default: copy 100% of trade size
@@ -185,9 +212,60 @@ class TradeCopier:
         self.max_trade_size = max_trade_size
         logger.info(f"Copy parameters set: {copy_percentage*100}% of trades, min: ${min_trade_size}, max: ${max_trade_size}")
     
+    def load_detected_trades(self):
+        """Load previously detected trades from persistence file"""
+        try:
+            if os.path.exists(self.persistence_file):
+                with open(self.persistence_file, 'rb') as f:
+                    data = pickle.load(f)
+                    self.detected_trades = data.get('detected_trades', {})
+                    self.processed_transactions = set(data.get('processed_transactions', []))
+                logger.info(f"Loaded {len(self.detected_trades)} detected trades and {len(self.processed_transactions)} processed transactions")
+            else:
+                logger.info("No existing trade data found, starting fresh")
+        except Exception as e:
+            logger.error(f"Error loading detected trades: {e}")
+            self.detected_trades = {}
+            self.processed_transactions = set()
+    
+    def save_detected_trades(self):
+        """Save detected trades to persistence file"""
+        try:
+            data = {
+                'detected_trades': self.detected_trades,
+                'processed_transactions': list(self.processed_transactions),
+                'last_updated': datetime.now().isoformat()
+            }
+            with open(self.persistence_file, 'wb') as f:
+                pickle.dump(data, f)
+            logger.debug(f"Saved {len(self.detected_trades)} detected trades to {self.persistence_file}")
+        except Exception as e:
+            logger.error(f"Error saving detected trades: {e}")
+    
+    def add_detected_trade(self, trade_hash: str, trade_info: Dict):
+        """Add a newly detected trade to persistence"""
+        self.detected_trades[trade_hash] = {
+            'trade_info': trade_info,
+            'detected_at': datetime.now().isoformat(),
+            'copied': False
+        }
+        self.save_detected_trades()
+    
+    def mark_trade_copied(self, trade_hash: str):
+        """Mark a trade as successfully copied"""
+        if trade_hash in self.detected_trades:
+            self.detected_trades[trade_hash]['copied'] = True
+            self.detected_trades[trade_hash]['copied_at'] = datetime.now().isoformat()
+            self.save_detected_trades()
+    
     def get_latest_transactions(self, wallet_address: str, lookback_minutes: int = 10) -> pd.DataFrame:
         """Get latest transactions for a wallet address within lookback period"""
         df = self.transaction_fetcher.fetch_all_pages(wallet_address)
+        
+        # Check if pagination is complete and signal to switch to copy trading
+        if self.transaction_fetcher.pagination_complete:
+            logger.info("Pagination complete - triggering copy trading mode")
+            return None  # Signal to switch modes
         
         if df is None or df.empty:
             return pd.DataFrame()
@@ -339,10 +417,30 @@ class TradeCopier:
         """Monitor a single address for new trades"""
         logger.info(f"Starting to monitor address: {wallet_address}")
         
+        # First, try to get recent transactions for monitoring
+        try:
+            recent_transactions = self.get_latest_transactions(wallet_address, lookback_minutes=check_interval//60 + 5)
+            
+            if recent_transactions is None:
+                logger.info(f"Pagination complete for {wallet_address}, switching to copy trading mode")
+                self.copy_historical_trades(wallet_address, lookback_hours=24, dry_run=False)
+                return
+        except Exception as e:
+            logger.error(f"Error in initial monitoring setup for {wallet_address}: {e}")
+            logger.info(f"Switching to copy trading mode for {wallet_address}")
+            self.copy_historical_trades(wallet_address, lookback_hours=24, dry_run=False)
+            return
+        
         while True:
             try:
                 # Get latest transactions
                 recent_transactions = self.get_latest_transactions(wallet_address, lookback_minutes=check_interval//60 + 5)
+                
+                # Check if pagination is complete
+                if recent_transactions is None:
+                    logger.info(f"Pagination complete for {wallet_address}, switching to copy trading mode")
+                    self.copy_historical_trades(wallet_address, lookback_hours=24, dry_run=False)
+                    return
                 
                 if not recent_transactions.empty:
                     logger.info(f"Found {len(recent_transactions)} recent transactions for {wallet_address}")
@@ -351,17 +449,27 @@ class TradeCopier:
                         # Add wallet address to transaction for analysis
                         transaction['wallet_address'] = wallet_address
                         
+                        # Check if this trade was already detected
+                        trade_hash = transaction['hash']
+                        if trade_hash in self.detected_trades:
+                            logger.debug(f"Trade {trade_hash} already detected, skipping")
+                            continue
+                        
                         # Analyze the trade
                         trade_info = self.analyze_trade(transaction)
                         
                         if trade_info['valid'] and trade_info['value_usdc'] >= self.min_trade_size:
                             logger.info(f"Valid trade found: {trade_info['market_slug']} - {trade_info['outcome']}")
                             
+                            # Save detected trade to persistence
+                            self.add_detected_trade(trade_hash, trade_info)
+                            
                             # Place copy trade
                             success = self.place_copy_trade(trade_info)
                             
                             if success:
                                 logger.info(f"Successfully copied trade from {wallet_address}")
+                                self.mark_trade_copied(trade_hash)
                             else:
                                 logger.error(f"Failed to copy trade from {wallet_address}")
                         
@@ -418,15 +526,26 @@ class TradeCopier:
         
         for _, transaction in historical_df.iterrows():
             transaction['wallet_address'] = wallet_address
+            
+            # Check if this trade was already detected
+            trade_hash = transaction['hash']
+            if trade_hash in self.detected_trades:
+                logger.debug(f"Historical trade {trade_hash} already detected, skipping")
+                continue
+            
             trade_info = self.analyze_trade(transaction)
             
             if trade_info['valid'] and trade_info['value_usdc'] >= self.min_trade_size:
                 logger.info(f"Historical trade: {trade_info['market_slug']} - {trade_info['outcome']} (${trade_info['value_usdc']:.2f})")
                 
+                # Save detected trade to persistence
+                self.add_detected_trade(trade_hash, trade_info)
+                
                 if not dry_run:
                     success = self.place_copy_trade(trade_info)
                     if success:
                         logger.info("Historical trade copied successfully")
+                        self.mark_trade_copied(trade_hash)
                     else:
                         logger.error("Failed to copy historical trade")
                     

@@ -176,7 +176,7 @@ def get_latest_transactions_for_markets(api_key, market_slug_outcome_list, marke
     contract_name = "NEG_RISK_CTF_EXCHANGE"
 
     # API URL to get last 10,000 transactions
-    url = f"https://api.polygonscan.com/api?module=account&action=token1155tx&contractaddress={NEG_RISK_CTF_EXCHANGE}&page=1&offset={offset}&startblock=0&endblock=99999999&sort=desc&apikey={api_key}"
+    url = f"https://api.etherscan.io/v2/api?chainid=137&module=account&action=token1155tx&contractaddress={NEG_RISK_CTF_EXCHANGE}&page=1&offset={offset}&startblock=0&endblock=99999999&sort=desc&tag=latest&apikey={api_key}"
 
     logger.info(f"Fetching last {offset} transactions for the contract.")
     logger.info(f"Request URL: {url}")

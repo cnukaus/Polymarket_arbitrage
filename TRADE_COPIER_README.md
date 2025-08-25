@@ -137,7 +137,7 @@ The trade copier uses the following parameters:
 
 ### 1. Transaction Fetching
 Uses Jeremy Whittaker's logic from `get_polygon_data.py`:
-- Fetches ERC-1155 transactions from Polygonscan API
+- Fetches ERC-1155 transactions from Etherscan API v2 (Polygon chain)
 - Paginates through all transaction pages
 - Filters for Polymarket contract interactions
 
@@ -218,9 +218,9 @@ python get_polygon_data.py --wallets 0x1234567890123456789012345678901234567890
    python generate_market_lookup_json.py
    ```
 
-2. **API rate limits**: Increase `check_interval` or add delays
-3. **Failed trades**: Check account balance and token allowances
-4. **Missing transactions**: Verify Polygonscan API key is valid
+3. **API rate limits**: Increase `check_interval` or add delays
+4. **Failed trades**: Check account balance and token allowances
+5. **Missing transactions**: Verify Polygonscan API key is valid (now works with Etherscan v2 API)
 
 ### Debug Mode
 Add detailed logging for troubleshooting:

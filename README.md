@@ -117,8 +117,16 @@ source keys.env  # Or use dotenv
 └── README.md
 ```
 
----
+# how to run---
+python3 generate_markets_data_csv.py
+python3 generate_market_lookup_json.py
 
+NOW YOU HAVE TO CONFIG strategy.py to have active markets, otherwise next step will go wrong
+
+python3 get_order_book.py
+{'error': 'No orderbook exists for the requested token id'}]
+
+python3 get_market_book_and_live_arb.py #generate nice arbitrage html summary
 
 # Script Descriptions
 

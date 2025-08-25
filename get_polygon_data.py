@@ -195,7 +195,7 @@ def fetch_all_pages(api_key, token_ids, market_slug_outcome_map, csv_output_dir=
     all_data = []  # Store all data here
 
     while True:
-        url = f"https://api.polygonscan.com/api?module=account&action=token1155tx&contractaddress={NEG_RISK_CTF_EXCHANGE}&page={page}&offset={offset}&startblock=0&endblock=99999999&sort=desc&apikey={api_key}"
+        url = f"https://api.etherscan.io/v2/api?chainid=137&module=account&action=token1155tx&contractaddress={NEG_RISK_CTF_EXCHANGE}&page={page}&offset={offset}&startblock=0&endblock=99999999&sort=desc&tag=latest&apikey={api_key}"
         logger.info(f"Fetching transaction data for tokens {token_ids}, page: {page}")
 
         data = fetch_data(url)
@@ -391,7 +391,7 @@ def get_transaction_details_by_hash(transaction_hash, api_key, output_dir='./dat
     os.makedirs(output_dir, exist_ok=True)
 
     # Construct the API URL for fetching transaction receipt details by hash
-    url = f"https://api.polygonscan.com/api?module=proxy&action=eth_getTransactionReceipt&txhash={transaction_hash}&apikey={api_key}"
+    url = f"https://api.etherscan.io/v2/api?chainid=137&module=proxy&action=eth_getTransactionReceipt&txhash={transaction_hash}&tag=latest&apikey={api_key}"
 
     logger.info(f"Fetching transaction details for hash: {transaction_hash}")
     logger.debug(f"Request URL: {url}")
@@ -1172,8 +1172,8 @@ def process_wallet_data(wallet_addresses, api_key, plot=True, latest_price_mode=
         logger.info(f"Processing wallet for user: {username}")
 
         # API URLs for ERC-20 and ERC-1155 transactions
-        erc20_url = f"https://api.polygonscan.com/api?module=account&action=tokentx&address={wallet_address}&startblock=0&endblock=99999999&sort=asc&apikey={api_key}"
-        erc1155_url = f"https://api.polygonscan.com/api?module=account&action=token1155tx&address={wallet_address}&startblock=0&endblock=99999999&sort=asc&apikey={api_key}"
+        erc20_url = f"https://api.etherscan.io/v2/api?chainid=137&module=account&action=tokentx&address={wallet_address}&startblock=0&endblock=99999999&sort=asc&tag=latest&apikey={api_key}"
+        erc1155_url = f"https://api.etherscan.io/v2/api?chainid=137&module=account&action=token1155tx&address={wallet_address}&startblock=0&endblock=99999999&sort=asc&tag=latest&apikey={api_key}"
 
         # Fetch ERC-20 and ERC-1155 transactions
         erc20_response = fetch_data(erc20_url)
@@ -1400,25 +1400,29 @@ def fetch_user_transactions(wallet_address, api_key):
         return pd.DataFrame(all_data)
 
     # Fetch ERC-20 transactions with pagination
-    erc20_url = (f"https://api.polygonscan.com/api"
-                 f"?module=account"
+    erc20_url = (f"https://api.etherscan.io/v2/api"
+                 f"?chainid=137"
+                 f"&module=account"
                  f"&action=tokentx"
                  f"&address={wallet_address}"
                  f"&startblock=0"
                  f"&endblock=99999999"
                  f"&sort=desc"
+                 f"&tag=latest"
                  f"&apikey={api_key}")
 
     erc20_df = fetch_paginated_data(erc20_url)
 
     # Fetch ERC-1155 transactions with pagination
-    erc1155_url = (f"https://api.polygonscan.com/api"
-                   f"?module=account"
+    erc1155_url = (f"https://api.etherscan.io/v2/api"
+                   f"?chainid=137"
+                   f"&module=account"
                    f"&action=token1155tx"
                    f"&address={wallet_address}"
                    f"&startblock=0"
                    f"&endblock=99999999"
                    f"&sort=desc"
+                   f"&tag=latest"
                    f"&apikey={api_key}")
 
     erc1155_df = fetch_paginated_data(erc1155_url)
