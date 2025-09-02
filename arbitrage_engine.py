@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from typing import List, Dict, Optional, Tuple
 from decimal import Decimal
 from enum import Enum
+from datetime import datetime
 
 from event_model import Event, ContractSide
 from event_matcher import MatchResult

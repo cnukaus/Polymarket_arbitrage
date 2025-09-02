@@ -41,12 +41,9 @@ class Event:
     entities: List[str]  # People, orgs, assets mentioned
     category: str
     resolution_criteria: str  # Plain text description
-    resolution_source_url: Optional[str] = None
     
     # Timing
     deadline: datetime  # ISO format resolution deadline
-    created_at: datetime = field(default_factory=datetime.utcnow)
-    updated_at: datetime = field(default_factory=datetime.utcnow)
     
     # Market structure
     venue: VenueType
@@ -57,6 +54,11 @@ class Event:
     fees: Dict[str, float]  # fee_type -> rate
     min_tick: float
     lot_size: float
+    
+    # Optional fields with defaults
+    resolution_source_url: Optional[str] = None
+    created_at: datetime = field(default_factory=datetime.utcnow)
+    updated_at: datetime = field(default_factory=datetime.utcnow)
     total_volume: Optional[float] = None
     
     # Matching metadata

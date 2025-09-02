@@ -1,0 +1,552 @@
+{
+  "timestamp": "2025-08-27T11:19:10.494448",
+  "summary": {
+    "total_markets": 20,
+    "quality_markets": 20,
+    "filter_efficiency": 1.0
+  },
+  "filter_statistics": {
+    "total_markets": 20,
+    "filtered_markets": 20,
+    "filter_breakdown": {
+      "volume_filter": 0,
+      "volume_24h_filter": 0,
+      "trades_filter": 0,
+      "trades_24h_filter": 0,
+      "liquidity_filter": 0,
+      "spread_filter": 0,
+      "positions_filter": 0,
+      "consistency_filter": 0,
+      "trade_size_filter": 0
+    },
+    "quality_metrics": {
+      "avg_volume": 0.0,
+      "avg_24h_volume": 0.0,
+      "avg_liquidity": 0.0,
+      "avg_spread": 0.0,
+      "avg_consistency": 0.0
+    }
+  },
+  "quality_markets": [
+    {
+      "question_id": "0x9deb0baac40648821f96f01339229a422e2f5c877de55dc4dbf981f95a1e709c",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x5317986240be3ab100ccbebeb8213ab45d1f5c502e6da17e1c9b30f9c6dcb52c",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x3d23087a0ed34ca1577afb1ae860714e9deddc8ff3cbfc5c15929c1472c59203",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x9831cf4e59285e5487e788d8a1435cb4753b9076a38512848ac1488348192f27",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x92e46e922e9f87353535007c0e254ec43fc97c84a4a9a11a135d6c8d5c1ddf3d",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x81d356ed5d42b84038a414187a8bb64afb597946c89c629220a98736bea25421",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x2a5cf651ddefca0f57f09a3eee5e1ec7372012453deb8aeada73bd0e80710123",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x4f036df28c705bf2e02318dac9e82fe3da62c682a238d37f16e389737dccafc6",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x7bc9c1311924e8dc2907dc00591b3d9528683f75924b99c436cca16dca39a28d",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0xe6837ecc9485f588af6858b0b307293ba1af60969fa386c59af2da8e37b1fd94",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x0de4ed9c811667ff9485e0f7aa3788a8db7c2147050f33defef2e2a302665433",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x3648ab7c146a9a85957e07c1d43a82272be71fde767822fd425e10ba0d6c0757",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0xd305baec7b9b2438d05e887dc84dbbb293a670ee443e541cbe888bfc5f1ba8dd",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x4276d9db726fc5cd4e301087130b2d5b788d69eefaab55dd9bdb74028432ba6f",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0xe3c42f6d6223c0355d7183ce2405e8b2e2456c536049ace975ec9f0622032a28",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x562a1c278fd84b9cd2147253fc9497ca07a616a59f7bc0c99966f321fa4493f4",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x0caf5c072f5abb4fe484b569949a9e414dc73d0d1af81be5effea1c2a48e4833",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0xb2835b87edf84f35410ea3f67ab405eb23cec6b28a1a3cbb74d2121b2683bddd",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x9dd2a37809c893a30f08ec6aeeb64e7cadcc57fbcb5daf9f0eb24533064c0bce",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    },
+    {
+      "question_id": "0x9c4d05a5b1cec55d56626ede111048cb6c43ec8e8c777f794b605d33be0c82ec",
+      "market_id": null,
+      "title": null,
+      "trading_metrics": {
+        "scaled_collateral_volume": null,
+        "normalized_volume_24h": null,
+        "trades_quantity": null,
+        "trades_24h": null,
+        "avg_trade_size": null
+      },
+      "position_data": {
+        "total_positions": null,
+        "active_positions": null,
+        "position_value_usd": null,
+        "market_cap": null
+      },
+      "quality_indicators": {
+        "spread_percentage": null,
+        "liquidity_score": null,
+        "volume_consistency_score": null,
+        "volume_trend_7d": null,
+        "enrichment_confidence": 0
+      },
+      "outcome_token_prices": []
+    }
+  ]
+}
