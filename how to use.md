@@ -1,3 +1,13 @@
+ create_selected_market_lookup.py which:
+
+  1. Reuses existing functionality from generate_market_lookup_json.py
+  2. Creates filtered JSON containing only markets from your specified slug list
+  3. Outputs to ./data/selected_market_lookup.json
+  4. Reports found/missing slugs and inclusion count
+  5. Cleans up temporary files automatically
+
+  The file includes example slug
+  
 New Features:
   - Confidence Score Calculation: Formula automatically calculates daily liquidity × cubic probability multiplier
   - Smart Score Formatting: Displays as 1.5k for large values, 12.3 for medium, 0.045 for small
