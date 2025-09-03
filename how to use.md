@@ -1,4 +1,37 @@
- create_selected_market_lookup.py which:
+Usage:
+  # For fresh data with incremental update:
+from incremental_markets_update import update_selected_markets_workflow
+selected_slugs = ["will-trump-resign-today"] #https://polymarket.com/event/will-trump-resign-today?tid=1756895469771
+update_selected_markets_workflow(selected_slugs)
+
+  # Or simple approach (assumes CSV is current):
+  from create_selected_market_lookup import create_selected_market_lookup
+  create_selected_market_lookup(selected_slugs)
+
+
+   1. incremental_markets_update.py - Full incremental update system
+  2. Updated create_selected_market_lookup.py - Integrated with incremental workflow
+
+  Key Features Implemented:
+  - Incremental CSV updates - Only fetches new markets, not full refresh
+  - Backup system - Automatic backups before updates
+  - API call limits - Prevents runaway API usage
+  - Complete workflow - update_selected_markets_workflow() handles entire process
+  - Error handling - Robust error handling throughout
+
+  Usage:
+  # For fresh data with incremental update:
+  from incremental_markets_update import update_selected_markets_workflow
+  selected_slugs = ["your-market-slug"]
+  update_selected_markets_workflow(selected_slugs)
+
+  # Or simple approach (assumes CSV is current):
+  from create_selected_market_lookup import create_selected_market_lookup
+  create_selected_market_lookup(selected_slugs)
+  
+  Strategy for Incremental Refresh:
+  
+  create_selected_market_lookup.py which:
 
   1. Reuses existing functionality from generate_market_lookup_json.py
   2. Creates filtered JSON containing only markets from your specified slug list

@@ -58,4 +58,9 @@ if __name__ == "__main__":
         "will-trump-resign-today"
     ]
     
+    # Option 1: Simple approach (assumes markets_data.csv is current)
     create_selected_market_lookup(selected_market_slugs)
+    
+    # Option 2: Use incremental workflow (recommended for fresh data)
+    # from incremental_markets_update import update_selected_markets_workflow
+    # update_selected_markets_workflow(selected_market_slugs)
