@@ -1,3 +1,4 @@
+The next new feature (if not available is)
 Here’s a tight, systems-first design doc for a “news-to-markets” arbitrage scout that (a) searches Stacker News for signals and (b) scans multiple prediction markets—initially Polymarket and Predyx—to detect and (optionally) execute cross-venue arbitrage.
 
 ---

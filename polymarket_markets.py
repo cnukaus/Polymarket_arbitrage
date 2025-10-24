@@ -130,6 +130,14 @@ class PolymarketClient:
             daily_volume = volume / days_remaining
             confidence_multiplier = (yes_probability / 100) ** 3
             intuitive_score = daily_volume * confidence_multiplier
+
+            # Capture recent price movement (24h change in percentage points)
+            raw_change = market.get('oneDayPriceChange')
+            try:
+                price_change_24h = float(raw_change) * 100 if raw_change is not None else 0.0
+            except (TypeError, ValueError):
+                price_change_24h = 0.0
+
             
             return {
                 'yes_price': yes_price,
@@ -144,7 +152,8 @@ class PolymarketClient:
                 'liquidity': liquidity,
                 'days_remaining': days_remaining,
                 'daily_volume': daily_volume,
-                'intuitive_score': intuitive_score
+                'intuitive_score': intuitive_score,
+                'price_change_24h': price_change_24h
             }
             
         except (ValueError, TypeError, json.JSONDecodeError) as e:
@@ -178,6 +187,8 @@ class PolymarketClient:
             markets_with_odds.sort(key=lambda m: m['odds_data']['intuitive_score'], reverse=reverse_sort)
         elif sort_by == 'rank_score':
             markets_with_odds.sort(key=lambda m: m['odds_data']['rank_score'], reverse=reverse_sort)
+        elif sort_by in ('recent_change', 'price_change_24h'):
+            markets_with_odds.sort(key=lambda m: m['odds_data'].get('price_change_24h', 0), reverse=reverse_sort)
             
         return markets_with_odds
 
@@ -276,7 +287,13 @@ class PolymarketClient:
         else:
             rank_str = "0.0000"
         
-        return f"{yes_prob:5.1f}% | {yes_odds:5.2f} | {days_remaining:3}d | {volume_str:9} | {intuit_str:>6} | {rank_str:>8} | {question}"
+        price_change = odds_data.get('price_change_24h', 0)
+        try:
+            price_change = float(price_change)
+        except (TypeError, ValueError):
+            price_change = 0.0
+        change_str = f"{price_change:+5.1f}pp"
+        return f"{yes_prob:5.1f}% | {yes_odds:5.2f} | {days_remaining:3}d | {volume_str:9} | {intuit_str:>6} | {rank_str:>8} | {change_str:>7} | {question}"
         
     def fetch_markets(self, limit: Optional[int] = None) -> List[Dict]:
         """Fetch open markets from Polymarket API using their filtering"""
@@ -554,8 +571,8 @@ def main():
     parser.add_argument('--end', type=str, help='End date for market closing period (YYYYMM format, e.g., 202512)')
     parser.add_argument('--date-range-cache', action='store_true', help='Use cached data for date range specified by --start and --end')
     parser.add_argument('--odds-ranking', action='store_true', help='Rank markets by odds instead of closing date')
-    parser.add_argument('--sort-by', type=str, choices=['yes_probability', 'yes_odds_decimal', 'volume', 'liquidity', 'intuitive_score', 'rank_score'], 
-                       default='yes_probability', help='Sort criterion for odds ranking (default: yes_probability)')
+    parser.add_argument('--sort-by', type=str, choices=['yes_probability', 'yes_odds_decimal', 'volume', 'liquidity', 'intuitive_score', 'rank_score', 'recent_change', 'price_change_24h'], 
+                       default='yes_probability', help='Sort criterion for odds ranking (default: yes_probability). Use recent_change for 24h yes% gainers.')
     
     args = parser.parse_args()
     
@@ -657,9 +674,9 @@ def main():
         
         # Display results with odds
         print(f"\nMarkets ranked by {args.sort_by}:")
-        print("-" * 140)
-        print(f"{'Yes%':<6} | {'Odds':<5} | {'Days':<4} | {'Volume':<9} | {'Intuit':<6} | {'Rank':<8} | Question")
-        print("-" * 140)
+        print("-" * 155)
+        print(f"{'Yes%':<6} | {'Odds':<5} | {'Days':<4} | {'Volume':<9} | {'Intuit':<6} | {'Rank':<8} | {'Chg24h':<7} | Question")
+        print("-" * 155)
         
         for market in ranked_markets:
             print(client.format_odds_display(market))
@@ -1118,10 +1135,8 @@ def get_full_list(markets_df, df_encodings):
             print(f"  Shares   Purchased:   {shares_purchased}")
             try:
               days_till_end = float(days_till_end)
-              print(f"  YES Profit (given 
-{yes_profit:.2f}. Implied yearly return: {((1+yes_profit/1000)**(365.25/days_till_end-1)-1):.2%}")
-              print(f"  NO  Profit (given 
-{no_profit:.2f}. Implied yearly return: {((1+no_profit/1000)**(365.25/days_till_end-1)-1):.2%}")
+              print(f"YES Profit (given {yes_profit:.2f}. Implied yearly return: {((1+yes_profit/1000)**(365.25/days_till_end-1)-1):.2%}")
+              print(f"  NO  Profit (given {no_profit:.2f}. Implied yearly return: {((1+no_profit/1000)**(365.25/days_till_end-1)-1):.2%}")
               if best_yes_polymarket > best_yes_predictit:
                 # Then bought yes on predictit (buy low)
                 print(f"    YES Profit % after 5% withdrawl fee: {((1+(yes_profit-50)/1000)**(365.25/days_till_end-1)-1):.2%}")

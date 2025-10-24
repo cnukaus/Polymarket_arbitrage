@@ -1,4 +1,11 @@
 Usage:
+
+
+# odd recent change
+ - Run python polymarket_markets.py --odds-ranking --sort-by recent_change --limit 25 to surface markets that have just
+  spiked. Scan the Yes% column for entries above your 85 % buy trigger and watch for them to pass 98 % for exits.
+
+
   # For fresh data with incremental update:
 from incremental_markets_update import update_selected_markets_workflow
 selected_slugs = ["will-trump-resign-today"] #https://polymarket.com/event/will-trump-resign-today?tid=1756895469771
@@ -61,6 +68,8 @@ New Features:
   python polymarket_markets.py --odds-ranking --sort-by confidence_score --limit 10
 
   The formula now identifies high-confidence, liquid markets perfect for "slam dunk" betting opportunities!
+
+DETECT new markets (added 22nd Sep):  python market_listener.py
 
 New Features:
   - Odds extraction: Parses outcomePrices and outcomes to find Yes/No
