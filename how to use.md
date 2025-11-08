@@ -1,4 +1,43 @@
 Usage:
+how do I combine commands in this repo to automatically download history diff and arbitrage opportunities
+
+1. Historical Data Collection + Arbitrage Monitoring
+Create a batch script run_arbitrage_monitor.bat:
+
+@echo off
+REM Load environment variables
+call keys.env
+
+REM Update market data
+python generate_markets_data_csv.py
+python generate_market_lookup_json.py
+
+REM Fetch historical price data
+python get_all_historical_data.py
+
+REM Update order books and monitor arbitrage (runs continuously)
+python get_market_book_and_live_arb.py
+This runs continuously and auto-refreshes every 5 minutes (configured in the script).
+
+2. Market Discovery + Opportunity Scanning
+Create scan_opportunities.bat:
+
+
+@echo off
+call keys.env
+
+REM Scan for new markets with recent price changes
+python polymarket_markets.py --odds-ranking --sort-by recent_change --limit 25
+
+REM Update selected markets incrementally
+python incremental_markets_update.py
+
+REM Listen for new market creation (runs continuously)
+python market_listener.py
+
+
+
+
 
 
 # odd recent change

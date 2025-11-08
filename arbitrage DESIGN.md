@@ -1,6 +1,20 @@
 polymarket_market.py
 test_enhanced_matching.py
 
+
+ I need to monitor the change of winning odss, for example if my data history is every
+▌ 5 min to 60 min, i need to find eligible sequence (gap no longer than 60 min), and allow me to save stats like "
+▌ 50 events has odds of events reach 80%, then 90% of these events will reach 95%" (I need to customise these
+▌ threads":
+ Added odds_sequence_monitor.py:31-220 with dataclasses, history loaders, gap-aware sequence splitting, and
+  threshold progression evaluation supporting configurable direction and identifier tracking.
+  - Added CLI flow in odds_sequence_monitor.py:235-311 for running analyses with extension filtering and optional
+  JSON summaries.
+  - Created regression coverage Tests
+
+  - pytest Polymarket_arbitrage/tests/test_odds_monitor.py
+
+
 Enhanced Query Generation Strategies
 
   7 Different Strategies (ordered by confidence):

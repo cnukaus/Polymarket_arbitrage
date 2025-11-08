@@ -81,7 +81,7 @@ def write_markets_to_csv(markets_list, csv_file="./data/markets_data.csv"):
     csv_columns = sorted(csv_columns)
 
     try:
-        with open(csv_file, 'w', newline='') as csvfile:
+        with open(csv_file, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
             writer.writeheader()
             for market in markets_list:
@@ -274,7 +274,7 @@ def update_csv_file_every_minute(csv_file, arb_opportunities):
         # Write the data to the CSV
         try:
             file_exists = os.path.isfile(csv_file)
-            with open(csv_file, 'a', newline='') as csvfile:
+            with open(csv_file, 'a', newline='', encoding='utf-8') as csvfile:
                 writer = csv.writer(csvfile)
 
                 # If file does not exist, write the header

@@ -3,8 +3,18 @@ import json
 import ast
 import os
 import shutil
+import sys
+import io
 from datetime import datetime, timezone
 from pathlib import Path
+
+try:
+    sys.stdout.reconfigure(errors='replace')
+    sys.stderr.reconfigure(errors='replace')
+except AttributeError:
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding=sys.stdout.encoding or 'utf-8', errors='replace')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding=sys.stderr.encoding or 'utf-8', errors='replace')
+
 
 def load_existing_lookup(json_file):
     """Load existing market lookup JSON file if it exists."""
@@ -12,19 +22,19 @@ def load_existing_lookup(json_file):
         try:
             with open(json_file, 'r') as f:
                 existing_data = json.load(f)
-            print(f"📋 Loaded {len(existing_data)} existing markets from {json_file}")
+            print(f"ðŸ“‹ Loaded {len(existing_data)} existing markets from {json_file}")
             return existing_data
         except json.JSONDecodeError as e:
-            print(f"⚠️  Warning: Invalid JSON in {json_file}, creating backup: {e}")
+            print(f"âš ï¸  Warning: Invalid JSON in {json_file}, creating backup: {e}")
             backup_path = f"{json_file}.backup.{int(datetime.now().timestamp())}"
             shutil.copy2(json_file, backup_path)
-            print(f"💾 Backup created: {backup_path}")
+            print(f"ðŸ’¾ Backup created: {backup_path}")
             return {}
         except Exception as e:
-            print(f"⚠️  Warning: Could not load {json_file}: {e}")
+            print(f"âš ï¸  Warning: Could not load {json_file}: {e}")
             return {}
     else:
-        print(f"📄 Creating new market lookup file: {json_file}")
+        print(f"ðŸ“„ Creating new market lookup file: {json_file}")
         return {}
 
 def safe_parse_tokens(tokens_str):
@@ -45,8 +55,25 @@ def safe_parse_tokens(tokens_str):
                 tokens_fixed = str(tokens_str).replace("'", '"')
                 return json.loads(tokens_fixed)
             except json.JSONDecodeError:
-                print(f"⚠️  Warning: Could not parse tokens: {tokens_str[:100]}...")
+                print(f"âš ï¸  Warning: Could not parse tokens: {tokens_str[:100]}...")
                 return []
+
+def read_csv_with_fallback(csv_file):
+    """Read CSV with encoding fallbacks to handle smart quotes and other cp1252 artifacts."""
+    raw_bytes = Path(csv_file).read_bytes()
+    encodings = ['utf-8', 'utf-8-sig', 'cp1252', 'latin-1']
+    last_error = None
+    for encoding in encodings:
+        try:
+            text = raw_bytes.decode(encoding)
+            if encoding != 'utf-8':
+                print(f"Warning: UTF-8 failed, using {encoding} encoding")
+            return pd.read_csv(io.StringIO(text))
+        except UnicodeDecodeError as exc:
+            last_error = exc
+    print(f"Warning: Falling back to UTF-8 with replacement due to decode error: {last_error}")
+    text = raw_bytes.decode('utf-8', errors='replace')
+    return pd.read_csv(io.StringIO(text))
 
 def validate_market_data(condition_id, description, market_slug, tokens):
     """Validate market data before adding to lookup."""
@@ -83,12 +110,12 @@ def create_market_lookup_incremental(csv_file, output_json_file, backup=True):
     Create/update a JSON lookup from a CSV file incrementally.
     Only adds new markets or updates changed ones.
     """
-    print("🚀 INCREMENTAL MARKET LOOKUP GENERATOR")
+    print("ðŸš€ INCREMENTAL MARKET LOOKUP GENERATOR")
     print("=" * 60)
     
     # Validate input files
     if not os.path.exists(csv_file):
-        print(f"❌ Error: CSV file not found: {csv_file}")
+        print(f"âŒ Error: CSV file not found: {csv_file}")
         return False
     
     # Create output directory if it doesn't exist
@@ -101,37 +128,37 @@ def create_market_lookup_incremental(csv_file, output_json_file, backup=True):
         backup_path = f"{output_json_file}.backup.{timestamp}"
         try:
             shutil.copy2(output_json_file, backup_path)
-            print(f"💾 Backup created: {backup_path}")
+            print(f"ðŸ’¾ Backup created: {backup_path}")
         except Exception as e:
-            print(f"⚠️  Warning: Could not create backup: {e}")
+            print(f"âš ï¸  Warning: Could not create backup: {e}")
     
     # Load existing lookup
     existing_lookup = load_existing_lookup(output_json_file)
     
     try:
         # Read the CSV file
-        print(f"📊 Reading CSV file: {csv_file}")
-        df = pd.read_csv(csv_file)
-        print(f"📈 Found {len(df)} total records in CSV")
+        print(f"ðŸ“Š Reading CSV file: {csv_file}")
+        df = read_csv_with_fallback(csv_file)
+        print(f"ðŸ“ˆ Found {len(df)} total records in CSV")
         
         # Validate required columns
         required_columns = ['condition_id', 'description', 'market_slug', 'tokens']
         missing_columns = [col for col in required_columns if col not in df.columns]
         if missing_columns:
-            print(f"❌ Error: Missing required columns: {missing_columns}")
+            print(f"âŒ Error: Missing required columns: {missing_columns}")
             return False
         
         # Remove duplicates, keeping the most recent (last) occurrence
-        print("🔍 Removing duplicates...")
+        print("ðŸ” Removing duplicates...")
         df_dedup = df.drop_duplicates(subset='condition_id', keep='last')
-        print(f"📉 After deduplication: {len(df_dedup)} records")
+        print(f"ðŸ“‰ After deduplication: {len(df_dedup)} records")
         
         # Process markets incrementally
         new_markets = 0
         updated_markets = 0
         failed_markets = 0
         
-        print("🔄 Processing markets...")
+        print("ðŸ”„ Processing markets...")
         
         for index, row in df_dedup.iterrows():
             condition_id = str(row['condition_id'])
@@ -145,7 +172,7 @@ def create_market_lookup_incremental(csv_file, output_json_file, backup=True):
             # Validate market data
             validation_issues = validate_market_data(condition_id, description, market_slug, tokens_list)
             if validation_issues:
-                print(f"⚠️  Skipping market {condition_id}: {'; '.join(validation_issues)}")
+                print(f"âš ï¸  Skipping market {condition_id}: {'; '.join(validation_issues)}")
                 failed_markets += 1
                 continue
             
@@ -160,12 +187,12 @@ def create_market_lookup_incremental(csv_file, output_json_file, backup=True):
                         })
                 
                 if not tokens_info:
-                    print(f"⚠️  Skipping market {condition_id}: No valid tokens")
+                    print(f"âš ï¸  Skipping market {condition_id}: No valid tokens")
                     failed_markets += 1
                     continue
                 
             except Exception as e:
-                print(f"⚠️  Error processing tokens for {condition_id}: {e}")
+                print(f"âš ï¸  Error processing tokens for {condition_id}: {e}")
                 failed_markets += 1
                 continue
             
@@ -197,7 +224,7 @@ def create_market_lookup_incremental(csv_file, output_json_file, backup=True):
                         print(f"   Processed {new_markets + updated_markets} markets...")
         
         # Save the updated lookup
-        print("💾 Saving updated lookup...")
+        print("ðŸ’¾ Saving updated lookup...")
         try:
             # Write to temporary file first for atomicity
             temp_file = f"{output_json_file}.tmp"
@@ -207,31 +234,31 @@ def create_market_lookup_incremental(csv_file, output_json_file, backup=True):
             # Atomically replace the original file
             os.replace(temp_file, output_json_file)
             
-            print(f"✅ Successfully updated market lookup!")
-            print(f"📊 SUMMARY:")
-            print(f"   • Total markets in lookup: {len(existing_lookup)}")
-            print(f"   • New markets added: {new_markets}")
-            print(f"   • Markets updated: {updated_markets}")
-            print(f"   • Failed to process: {failed_markets}")
-            print(f"   • Output file: {output_json_file}")
+            print(f"âœ… Successfully updated market lookup!")
+            print(f"ðŸ“Š SUMMARY:")
+            print(f"   â€¢ Total markets in lookup: {len(existing_lookup)}")
+            print(f"   â€¢ New markets added: {new_markets}")
+            print(f"   â€¢ Markets updated: {updated_markets}")
+            print(f"   â€¢ Failed to process: {failed_markets}")
+            print(f"   â€¢ Output file: {output_json_file}")
             
             return True
             
         except Exception as e:
-            print(f"❌ Error saving lookup file: {e}")
+            print(f"âŒ Error saving lookup file: {e}")
             # Clean up temp file if it exists
             if os.path.exists(f"{output_json_file}.tmp"):
                 os.remove(f"{output_json_file}.tmp")
             return False
             
     except Exception as e:
-        print(f"❌ Error processing CSV file: {e}")
+        print(f"âŒ Error processing CSV file: {e}")
         return False
 
 # Wrapper for backward compatibility
 def create_market_lookup(csv_file, output_json_file):
     """Backward compatibility wrapper."""
-    print("⚠️  Using legacy function name. Consider using create_market_lookup_incremental()")
+    print("âš ï¸  Using legacy function name. Consider using create_market_lookup_incremental()")
     return create_market_lookup_incremental(csv_file, output_json_file)
 
 
@@ -261,23 +288,23 @@ if __name__ == "__main__":
     success = create_market_lookup_incremental(csv_file, output_json_file, backup=True)
     
     if success:
-        print("\n🎉 Market lookup successfully updated!")
+        print("\nðŸŽ‰ Market lookup successfully updated!")
         
         # Example usage of query functions
         try:
             example_condition_id = '0x84dfb8b5cac6356d4ac7bb1da55bb167d0ef65d06afc2546389630098cc467e9'
             market_slug = get_market_slug_by_condition_id(output_json_file, example_condition_id)
             if market_slug:
-                print(f"\n📍 Example query result:")
+                print(f"\nðŸ“ Example query result:")
                 print(f"   Condition ID: {example_condition_id}")
                 print(f"   Market Slug: {market_slug}")
             
             # Example keyword search
             trump_markets = query_description_by_keyword(output_json_file, 'Trump')
             if trump_markets:
-                print(f"\n🔍 Found {len(trump_markets)} markets containing 'Trump'")
+                print(f"\nðŸ” Found {len(trump_markets)} markets containing 'Trump'")
             
         except Exception as e:
-            print(f"⚠️  Warning: Error running examples: {e}")
+            print(f"âš ï¸  Warning: Error running examples: {e}")
     else:
-        print("\n❌ Failed to update market lookup")
+        print("\nâŒ Failed to update market lookup")
